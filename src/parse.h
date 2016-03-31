@@ -9,7 +9,9 @@
 #define CHANGE_DESCRIPTION "CHANGE_DESCRIPTION"
 #define PRINT_DESCRIPTION "PRINT_DESCRIPTION"
 #define DELETE_PATIENT_DATA "DELETE_PATIENT_DATA"
+#define MAX_COMMAND_LENGTH 30
 
+#define ARGUMENT_SWITCH_DEBUG "-v"
 
 typedef enum
 {
@@ -18,7 +20,6 @@ typedef enum
     PARSE_RESULT_IGNORED,
     PARSE_RESULT_EOF,
 } ParseResult;
-
 
 typedef struct
 {
@@ -51,35 +52,34 @@ typedef struct
 } DataDeletePatientData;
 
 
-typedef ParseResult (*OnEnterDescriptionPointer)(Hospital* hospital, DataEnterDescription *);
-typedef ParseResult (*OnCopyDescriptionPointer)(Hospital* hospital, DataCopyDescription *);
-typedef ParseResult (*OnChangeDescriptionPointer)(Hospital* hospital, DataChangeDescription *);
-typedef ParseResult (*OnPrintDescriptionPointer)(Hospital* hospital, DataPrintDescription *);
-typedef ParseResult (*OnDeletePatientDataPointer)(Hospital* hospital, DataDeletePatientData *);
-
+typedef struct OnEventListener
+{
+    ParseResult (*OnEnterDescription)(struct OnEventListener* this, DataEnterDescription* data);
+    ParseResult (*OnCopyDescription)(struct OnEventListener* this, DataCopyDescription* data);
+    ParseResult (*OnChangeDescription)(struct OnEventListener* this, DataChangeDescription* data);
+    ParseResult (*OnPrintDescription)(struct OnEventListener* this, DataPrintDescription* data);
+    ParseResult (*OnDeletePatientData)(struct OnEventListener* this, DataDeletePatientData* data);
+} OnEventListener;
 
 typedef struct Parser
 {
-    OnEnterDescriptionPointer OnEnterDescription;
-    OnCopyDescriptionPointer OnCopyDescription;
-    OnChangeDescriptionPointer OnChangeDescription;
-    OnPrintDescriptionPointer OnPrintDescription;
-    OnDeletePatientDataPointer OnDeletePatientData;
-    Hospital* hospital;
+    OnEventListener* listener;
+    bool debugMode;
 } Parser;
 
+
+/*
+ * Parsers namespace
+ */
 struct parsers {
-    Parser* (*new)();
+    Parser* (*new)(int argumentsCount, char** arguments);
     void (*free)(Parser* parser);
 
     ParseResult (*parse)(Parser* parser);
 
-    void (*setHospital)(Parser* parser, Hospital* hospital);
-    void (*setOnEnterDescription)(Parser* parser, OnEnterDescriptionPointer function);
-    void (*setOnCopyDescription)(Parser* parser, OnCopyDescriptionPointer function);
-    void (*setOnChangeDescription)(Parser* parser, OnChangeDescriptionPointer function);
-    void (*setOnPrintDescription)(Parser* parser, OnPrintDescriptionPointer function);
-    void (*setOnDeletePatientData)(Parser* parser, OnDeletePatientDataPointer function);
+    void (*setEventListener)(Parser* parser, OnEventListener* listener);
+
+    bool (*isDebugMode)(Parser* parser);
 };
 
 const struct parsers Parsers;

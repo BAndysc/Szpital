@@ -13,7 +13,6 @@ static Patient* newPatient(const char* name)
     return patient;
 }
 
-
 static void clearPatientData(Patient* patient)
 {
     freeDiseaseList(patient->diseases);

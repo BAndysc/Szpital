@@ -4,12 +4,18 @@
 struct PatientList;
 struct Parser;
 
+struct HospitalOnEventListener;
+
 typedef struct
 {
     struct PatientList* patients;
+    struct HospitalOnEventListener* listeners;
 } Hospital;
 
 
+/*
+ * Hospitals namespace
+ */
 struct hospitals {
     Hospital* (*new)();
     void (*free)(Hospital*);

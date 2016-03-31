@@ -10,7 +10,9 @@ typedef struct Patient
 } Patient;
 
 
-
+/*
+ * Patients namespace
+ */
 struct patients {
     Patient* (*new)(char const* name);
     void (*free)(Patient*);

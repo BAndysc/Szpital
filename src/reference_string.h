@@ -9,7 +9,9 @@ typedef struct ReferencedString
 } ReferencedString;
 
 
-
+/*
+ * ReferencedStrings namespace
+ */
 struct referencedStrings {
     ReferencedString* (*new)(char const* string);
     void (*free)(ReferencedString*);

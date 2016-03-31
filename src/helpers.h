@@ -1,4 +1,3 @@
-/* This code is public domain -- Will Hartung 4/9/09 */
 #define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
@@ -34,11 +33,11 @@ static void expandCharArray(char** arrayToExpand, size_t size)
     }
 }
 
-static void expandIfRequired(char** word, size_t* size, int index)
+static void expandIfRequired(char** word, size_t* size,size_t newSize, int index)
 {
     if (index == *size)
     {
-        *size *= 2;
+        *size = newSize;
         expandCharArray(word, *size);
     }
 }
@@ -49,9 +48,10 @@ static void readPrintableUpTo(char** word, size_t* size, char charUpTo)
 
     while ((readChar = getchar()) != EOF && isprint(readChar) && readChar != charUpTo)
     {
-        expandIfRequired(word, size, index);
+        expandIfRequired(word, size,(*size)*2, index);
         (*word)[index++] = (char)readChar;
     }
+    expandIfRequired(word, size,*size+1, index);
     (*word)[index] = '\0';
 }
 
@@ -71,21 +71,12 @@ static char* read(char charToSkip)
 
 char* readSingleWord()
 {
-    /*char* cr = malloc(1000);
-    scanf("%s ",cr);
-    return cr;*/
+
     return read(' ');
 }
 
-
 char* readLine()
 {
-    /*char* line = NULL;
-    size_t size;
-    scanf(" ");
-    getline(&line, &size, stdin);
-    line[strlen(line)-1] ='\0';
-    return line;*/
     return read('\n');
 }
 
@@ -96,56 +87,8 @@ int readInt()
     return integer;
 }
 
-/*
-size_t getline(char **lineptr, size_t *n, FILE *stream) {
-    char *bufptr = NULL;
-    char *p = bufptr;
-    size_t size;
-    int c;
 
-    if (lineptr == NULL) {
-        return -1;
-    }
-    if (stream == NULL) {
-        return -1;
-    }
-    if (n == NULL) {
-        return -1;
-    }
-    bufptr = *lineptr;
-    size = *n;
-
-    c = fgetc(stream);
-    if (c == EOF) {
-        return -1;
-    }
-    if (bufptr == NULL) {
-        bufptr = malloc(128);
-        if (bufptr == NULL) {
-            return -1;
-        }
-        size = 128;
-    }
-    p = bufptr;
-    while(c != EOF) {
-        if ((p - bufptr) > (size - 1)) {
-            size = size + 128;
-            bufptr = realloc(bufptr, size);
-            if (bufptr == NULL) {
-                return -1;
-            }
-        }
-        *p++ = c;
-        if (c == '\n') {
-            break;
-        }
-        c = fgetc(stream);
-    }
-
-    *p++ = '\0';
-    *lineptr = bufptr;
-    *n = size;
-
-    return p - bufptr - 1;
+bool stringsEqual(char* string1, char* string2)
+{
+    return strcmp(string1, string2)==0;
 }
-*/
