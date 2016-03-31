@@ -3,8 +3,7 @@
 
 struct DiseaseList;
 
-typedef struct Patient
-{
+typedef struct Patient {
     char* name;
     struct DiseaseList* diseases;
 } Patient;

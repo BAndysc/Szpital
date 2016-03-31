@@ -8,30 +8,26 @@ typedef struct Patient Patient;
 typedef struct Disease Disease;
 
 
-typedef struct DiseaseNode
-{
+typedef struct DiseaseNode {
     struct Disease* value;
     struct DiseaseNode* next;
     struct DiseaseNode* prev;
 } DiseaseNode;
 
-typedef struct DiseaseList
-{
+typedef struct DiseaseList {
     DiseaseNode* first;
     DiseaseNode* last;
     int size;
 } DiseaseList;
 
 
-typedef struct PatientNode
-{
+typedef struct PatientNode {
     Patient* value;
     struct PatientNode* prev;
     struct PatientNode* next;
 } PatientNode;
 
-typedef struct PatientList
-{
+typedef struct PatientList {
     PatientNode* first;
     PatientNode* last;
     int size;

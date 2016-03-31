@@ -2,7 +2,6 @@
 #define SZPITAL_PARSE_H
 
 #include <stdbool.h>
-#include "hospital_simulator.h"
 
 #define NEW_DISEASE_ENTER_DESCRIPTION "NEW_DISEASE_ENTER_DESCRIPTION"
 #define NEW_DISEASE_COPY_DESCRIPTION "NEW_DISEASE_COPY_DESCRIPTION"
@@ -13,47 +12,40 @@
 
 #define ARGUMENT_SWITCH_DEBUG "-v"
 
-typedef enum
-{
+typedef enum {
     PARSE_RESULT_OK,
     PARSE_RESULT_SILENT_OK,
     PARSE_RESULT_IGNORED,
     PARSE_RESULT_EOF,
 } ParseResult;
 
-typedef struct
-{
+typedef struct {
     char* name;
     char* diseaseDescription;
 } DataEnterDescription;
 
-typedef struct
-{
+typedef struct {
     char* sourceName;
     char* destinationName;
 } DataCopyDescription;
 
-typedef struct
-{
+typedef struct {
     char* name;
     int indexOfDisease;
     char* diseaseDescription;
 } DataChangeDescription;
 
-typedef struct
-{
+typedef struct {
     char* name;
     int indexOfDisease;
 } DataPrintDescription;
 
-typedef struct
-{
+typedef struct {
     char* name;
 } DataDeletePatientData;
 
 
-typedef struct OnEventListener
-{
+typedef struct OnEventListener {
     ParseResult (*OnEnterDescription)(struct OnEventListener* this, DataEnterDescription* data);
     ParseResult (*OnCopyDescription)(struct OnEventListener* this, DataCopyDescription* data);
     ParseResult (*OnChangeDescription)(struct OnEventListener* this, DataChangeDescription* data);
@@ -61,8 +53,7 @@ typedef struct OnEventListener
     ParseResult (*OnDeletePatientData)(struct OnEventListener* this, DataDeletePatientData* data);
 } OnEventListener;
 
-typedef struct Parser
-{
+typedef struct Parser {
     OnEventListener* listener;
     bool debugMode;
 } Parser;

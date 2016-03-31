@@ -8,16 +8,14 @@
  * Disease list
  */
 
-DiseaseList* newDiseaseList()
-{
+DiseaseList* newDiseaseList() {
     DiseaseList* list = calloc(1, sizeof(DiseaseList));
     list->first = calloc(1, sizeof(DiseaseNode));
     list->last = list->first;
     return list;
 }
 
-static DiseaseNode* getDiseaseNodeForward(DiseaseList* list, int index)
-{
+static DiseaseNode* getDiseaseNodeForward(DiseaseList* list, int index) {
     DiseaseNode* node = list->first->next;
 
     while (index-- > 0)
@@ -26,8 +24,7 @@ static DiseaseNode* getDiseaseNodeForward(DiseaseList* list, int index)
     return node;
 }
 
-static DiseaseNode* getDiseaseNodeBackwards(DiseaseList* list, int index)
-{
+static DiseaseNode* getDiseaseNodeBackwards(DiseaseList* list, int index) {
     DiseaseNode* node = list->last;
 
     while (index-- > 0)
@@ -36,8 +33,7 @@ static DiseaseNode* getDiseaseNodeBackwards(DiseaseList* list, int index)
     return node;
 }
 
-static DiseaseNode* getDiseaseNode(DiseaseList* list, int index)
-{
+static DiseaseNode* getDiseaseNode(DiseaseList* list, int index) {
     if (index >= list->size)
         return NULL;
 
@@ -48,16 +44,14 @@ static DiseaseNode* getDiseaseNode(DiseaseList* list, int index)
 }
 
 
-void freeDiseaseList(DiseaseList* list)
-{
+void freeDiseaseList(DiseaseList* list) {
     while (list->size > 0)
         removeDisease(list, 0);
     free(list->first);
     free(list);
 }
 
-void removeDisease(DiseaseList* list, int index)
-{
+void removeDisease(DiseaseList* list, int index) {
     if (index < list->size)
     {
         DiseaseNode* nodeToRemove = getDiseaseNode(list, index);
@@ -72,8 +66,7 @@ void removeDisease(DiseaseList* list, int index)
     }
 }
 
-void pushDisease(DiseaseList* list, Disease* disease)
-{
+void pushDisease(DiseaseList* list, Disease* disease) {
     DiseaseNode* node = malloc(sizeof(DiseaseNode));
 
     node->value = disease;
@@ -85,8 +78,7 @@ void pushDisease(DiseaseList* list, Disease* disease)
     list->size++;
 }
 
-Disease* getDisease(DiseaseList* list, int index)
-{
+Disease* getDisease(DiseaseList* list, int index) {
     if (index < 0 || index >= list->size)
         return NULL;
 
@@ -99,8 +91,7 @@ Disease* getDisease(DiseaseList* list, int index)
  * PATIENT LIST
  */
 
-PatientList* newPatientList()
-{
+PatientList* newPatientList() {
     PatientList* list = malloc(sizeof(PatientList));
 
     list->first = calloc(1, sizeof(PatientNode));
@@ -110,8 +101,7 @@ PatientList* newPatientList()
     return list;
 }
 
-void freePatientList(PatientList* list)
-{
+void freePatientList(PatientList* list) {
     while (list->size > 0)
         removePatient(list, 0);
 
@@ -120,8 +110,7 @@ void freePatientList(PatientList* list)
 }
 
 
-static PatientNode* getPatientNode(PatientList* list, int index)
-{
+static PatientNode* getPatientNode(PatientList* list, int index) {
     if (index >= list->size)
         return NULL;
 
@@ -134,8 +123,7 @@ static PatientNode* getPatientNode(PatientList* list, int index)
 }
 
 
-static PatientNode* getPatientNodeByName(PatientList* list, const char* name)
-{
+static PatientNode* getPatientNodeByName(PatientList* list, const char* name) {
     PatientNode* node = list->first->next;
 
     while (node)
@@ -151,8 +139,7 @@ static PatientNode* getPatientNodeByName(PatientList* list, const char* name)
 
 
 
-void removePatient(PatientList* list, int index)
-{
+void removePatient(PatientList* list, int index) {
     if (index < list->size)
     {
         PatientNode* nodeToRemove = getPatientNode(list, index);
@@ -169,16 +156,14 @@ void removePatient(PatientList* list, int index)
 }
 
 
-Patient* getPatient(PatientList* list, int index)
-{
+Patient* getPatient(PatientList* list, int index) {
     if (index >= list->size)
         return NULL;
 
     return getPatientNode(list, index)->value;
 }
 
-Patient* getPatientByName(PatientList* list, char const* name)
-{
+Patient* getPatientByName(PatientList* list, char const* name) {
     PatientNode* patientNode = getPatientNodeByName(list, name);
 
     if (!patientNode)
@@ -188,8 +173,7 @@ Patient* getPatientByName(PatientList* list, char const* name)
 }
 
 
-void pushPatient(PatientList* list, Patient* patient)
-{
+void pushPatient(PatientList* list, Patient* patient) {
     PatientNode* node = malloc(sizeof(PatientNode));
 
     node->value = patient;
@@ -202,8 +186,7 @@ void pushPatient(PatientList* list, Patient* patient)
 }
 
 
-int getPatientIdByName(PatientList* list, char const* name)
-{
+int getPatientIdByName(PatientList* list, char const* name) {
     PatientNode* node = list->first->next;
     int id = 0;
     while (node)

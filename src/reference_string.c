@@ -5,8 +5,7 @@
 
 static int ALLOCED_REFERENCED_STRINGS = 0;
 
-static ReferencedString* newReferencedString(char const* string)
-{
+static ReferencedString* newReferencedString(char const* string) {
     ReferencedString* referencedString = malloc(sizeof(ReferencedString));
 
     referencedString->references = 1;
@@ -17,28 +16,24 @@ static ReferencedString* newReferencedString(char const* string)
     return referencedString;
 }
 
-static void freeReferencedString(ReferencedString* referencedString)
-{
+static void freeReferencedString(ReferencedString* referencedString) {
     free(referencedString->string);
     free(referencedString);
     ALLOCED_REFERENCED_STRINGS--;
 }
 
-static void incrementReferenceString(ReferencedString* referencedString)
-{
+static void incrementReferenceString(ReferencedString* referencedString) {
     referencedString->references++;
 }
 
-static void dereferenceReferencedString(ReferencedString* referencedString)
-{
+static void dereferenceReferencedString(ReferencedString* referencedString) {
     referencedString->references--;
 
     if (referencedString->references == 0)
         freeReferencedString(referencedString);
 }
 
-static int getAllocatedReferenceStringsCount()
-{
+static int getAllocatedReferenceStringsCount() {
     return ALLOCED_REFERENCED_STRINGS;
 }
 

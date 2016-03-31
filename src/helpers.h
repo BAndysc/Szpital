@@ -13,15 +13,13 @@ inline void free_stack(void *ptr) {
     free(*(void **) ptr);
 }
 
-static void skipWhitespaces()
-{
+static void skipWhitespaces() {
     int readChar;
     while ((readChar = getchar()) == ' ');
         ungetc(readChar, stdin);
 }
 
-static void expandCharArray(char** arrayToExpand, size_t size)
-{
+static void expandCharArray(char** arrayToExpand, size_t size) {
     char* oldPointer = *arrayToExpand;
     *arrayToExpand = realloc(*arrayToExpand, size);
 
@@ -33,8 +31,7 @@ static void expandCharArray(char** arrayToExpand, size_t size)
     }
 }
 
-static void expandIfRequired(char** word, size_t* size,size_t newSize, int index)
-{
+static void expandIfRequired(char** word, size_t* size,size_t newSize, int index) {
     if (index == *size)
     {
         *size = newSize;
@@ -42,8 +39,7 @@ static void expandIfRequired(char** word, size_t* size,size_t newSize, int index
     }
 }
 
-static void readPrintableUpTo(char** word, size_t* size, char charUpTo)
-{
+static void readPrintableUpTo(char** word, size_t* size, char charUpTo) {
     int readChar, index = 0;
 
     while ((readChar = getchar()) != EOF && isprint(readChar) && readChar != charUpTo)
@@ -55,8 +51,7 @@ static void readPrintableUpTo(char** word, size_t* size, char charUpTo)
     (*word)[index] = '\0';
 }
 
-static char* read(char charToSkip)
-{
+static char* read(char charToSkip) {
     char* word;
     size_t wordSize;
 
@@ -69,26 +64,22 @@ static char* read(char charToSkip)
     return word;
 }
 
-char* readSingleWord()
-{
+char* readSingleWord() {
 
     return read(' ');
 }
 
-char* readLine()
-{
+char* readLine() {
     return read('\n');
 }
 
-int readInt()
-{
+int readInt() {
     int integer;
     scanf("%d", &integer);
     return integer;
 }
 
 
-bool stringsEqual(char* string1, char* string2)
-{
+bool stringsEqual(char* string1, char* string2) {
     return strcmp(string1, string2)==0;
 }

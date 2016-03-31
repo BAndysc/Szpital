@@ -2,8 +2,7 @@
 #define SZPITAL_REFERENCE_STRING_H
 
 
-typedef struct ReferencedString
-{
+typedef struct ReferencedString {
     int references;
     char* string;
 } ReferencedString;

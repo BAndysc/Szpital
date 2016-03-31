@@ -3,8 +3,7 @@
 #include "patient.h"
 #include "structure.h"
 
-static Patient* newPatient(const char* name)
-{
+static Patient* newPatient(const char* name) {
     Patient* patient = malloc(sizeof(Patient));
 
     patient->name = strdup(name);
@@ -13,14 +12,12 @@ static Patient* newPatient(const char* name)
     return patient;
 }
 
-static void clearPatientData(Patient* patient)
-{
+static void clearPatientData(Patient* patient) {
     freeDiseaseList(patient->diseases);
     patient->diseases = newDiseaseList();
 }
 
-static void freePatient(Patient* patient)
-{
+static void freePatient(Patient* patient) {
     freeDiseaseList(patient->diseases);
     free(patient->name);
     free(patient);

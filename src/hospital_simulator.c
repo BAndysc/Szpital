@@ -13,14 +13,12 @@
  * struct OnEventListener is first field and C standard (C99: 6.7.2.1.5) guarantees
  * equivalence of memory layout
  */
-typedef struct HospitalOnEventListener
-{
+typedef struct HospitalOnEventListener {
     OnEventListener base;
     Hospital* hospital;
 } HospitalOnEventListener;
 
-static Patient* getPatientByNameOrCreate(Hospital* hospital, char* name)
-{
+static Patient* getPatientByNameOrCreate(Hospital* hospital, char* name) {
     Patient* patient = getPatientByName(hospital->patients, name);
     if (!patient)
     {
@@ -30,8 +28,7 @@ static Patient* getPatientByNameOrCreate(Hospital* hospital, char* name)
     return patient;
 }
 
-static ParseResult OnEnterDescription(OnEventListener* this, DataEnterDescription* data)
-{
+static ParseResult OnEnterDescription(OnEventListener* this, DataEnterDescription* data) {
     Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
     Patient* patient = getPatientByNameOrCreate(hospital, data->name);
 
@@ -39,8 +36,7 @@ static ParseResult OnEnterDescription(OnEventListener* this, DataEnterDescriptio
     return PARSE_RESULT_OK;
 }
 
-static ParseResult OnCopyDescription(OnEventListener* this, DataCopyDescription* data)
-{
+static ParseResult OnCopyDescription(OnEventListener* this, DataCopyDescription* data) {
     Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
     Patient* patient = getPatientByName(hospital->patients, data->sourceName);
 
@@ -58,8 +54,7 @@ static ParseResult OnCopyDescription(OnEventListener* this, DataCopyDescription*
     return PARSE_RESULT_OK;
 }
 
-static ParseResult OnChangeDescription(OnEventListener* this, DataChangeDescription* data)
-{
+static ParseResult OnChangeDescription(OnEventListener* this, DataChangeDescription* data) {
     Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
     Patient* patient = getPatientByName(hospital->patients, data->name);
 
@@ -75,8 +70,7 @@ static ParseResult OnChangeDescription(OnEventListener* this, DataChangeDescript
     return PARSE_RESULT_OK;
 }
 
-static ParseResult OnPrintDescription(OnEventListener* this, DataPrintDescription* data)
-{
+static ParseResult OnPrintDescription(OnEventListener* this, DataPrintDescription* data) {
     Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
     Patient* patient = getPatientByName(hospital->patients, data->name);
 
@@ -92,8 +86,7 @@ static ParseResult OnPrintDescription(OnEventListener* this, DataPrintDescriptio
     return PARSE_RESULT_SILENT_OK;
 }
 
-static ParseResult OnDeletePatientData(OnEventListener* this, DataDeletePatientData* data)
-{
+static ParseResult OnDeletePatientData(OnEventListener* this, DataDeletePatientData* data) {
     Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
     Patient* patient = getPatientByName(hospital->patients, data->name);
 
@@ -106,8 +99,7 @@ static ParseResult OnDeletePatientData(OnEventListener* this, DataDeletePatientD
 }
 
 
-static HospitalOnEventListener* newHospitalOnEventListener(Hospital* hospital)
-{
+static HospitalOnEventListener* newHospitalOnEventListener(Hospital* hospital) {
     HospitalOnEventListener* listener = malloc(sizeof(HospitalOnEventListener));
     listener->hospital = hospital;
     listener->base.OnEnterDescription = OnEnterDescription;
@@ -119,22 +111,19 @@ static HospitalOnEventListener* newHospitalOnEventListener(Hospital* hospital)
     return listener;
 }
 
-static void hookParserToHospital(Hospital* hospital, Parser* parser)
-{
+static void hookParserToHospital(Hospital* hospital, Parser* parser) {
     OnEventListener* baseListener = (OnEventListener*)hospital->listeners;
     Parsers.setEventListener(parser, baseListener);
 }
 
-static Hospital* newHospital()
-{
+static Hospital* newHospital() {
     Hospital* hospital = malloc(sizeof(Hospital));
     hospital->patients = newPatientList();
     hospital->listeners = newHospitalOnEventListener(hospital);
     return hospital;
 }
 
-static void freeHospital(Hospital* hospital)
-{
+static void freeHospital(Hospital* hospital) {
     freePatientList(hospital->patients);
     free(hospital->listeners);
     free(hospital);

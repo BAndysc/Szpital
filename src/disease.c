@@ -2,16 +2,14 @@
 #include "disease.h"
 #include "reference_string.h"
 
-static Disease* newDisease(char const* description)
-{
+static Disease* newDisease(char const* description) {
     Disease* disease = malloc(sizeof(Disease));
     disease->description = ReferencedStrings.new(description);
 
     return disease;
 }
 
-static Disease* copyDisease(Disease* copy)
-{
+static Disease* copyDisease(Disease* copy) {
     Disease* disease = malloc(sizeof(Disease));
 
     disease->description = copy->description;
@@ -20,20 +18,17 @@ static Disease* copyDisease(Disease* copy)
     return disease;
 }
 
-static void freeDisease(Disease* disease)
-{
+static void freeDisease(Disease* disease) {
     ReferencedStrings.dereference(disease->description);
     free(disease);
 }
 
-static void setDescriptionDisease(Disease* disease, char const* newDescription)
-{
+static void setDescriptionDisease(Disease* disease, char const* newDescription) {
     ReferencedStrings.dereference(disease->description);
     disease->description = ReferencedStrings.new(newDescription);
 }
 
-static void copyDiseaseDescription(Disease* destination, Disease* source)
-{
+static void copyDiseaseDescription(Disease* destination, Disease* source) {
     ReferencedStrings.dereference(destination->description);
 
     destination->description = source->description;

@@ -6,8 +6,7 @@ struct Parser;
 
 struct HospitalOnEventListener;
 
-typedef struct
-{
+typedef struct {
     struct PatientList* patients;
     struct HospitalOnEventListener* listeners;
 } Hospital;

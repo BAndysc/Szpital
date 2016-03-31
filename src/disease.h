@@ -3,8 +3,7 @@
 
 struct ReferencedString;
 
-typedef struct Disease
-{
+typedef struct Disease {
     struct ReferencedString* description;
 } Disease;
 
