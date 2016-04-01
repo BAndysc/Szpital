@@ -7,18 +7,18 @@ static Patient* newPatient(const char* name) {
     Patient* patient = malloc(sizeof(Patient));
 
     patient->name = strdup(name);
-    patient->diseases = newDiseaseList();
+    patient->diseases = DiseaseLists.new();
 
     return patient;
 }
 
 static void clearPatientData(Patient* patient) {
-    freeDiseaseList(patient->diseases);
-    patient->diseases = newDiseaseList();
+    DiseaseLists.free(patient->diseases);
+    patient->diseases = DiseaseLists.new();
 }
 
 static void freePatient(Patient* patient) {
-    freeDiseaseList(patient->diseases);
+    DiseaseLists.free(patient->diseases);
     free(patient->name);
     free(patient);
 }
@@ -26,7 +26,7 @@ static void freePatient(Patient* patient) {
 
 
 const struct patients Patients = {
-        .new = newPatient,
-        .free = freePatient,
-        .clearPatientData = clearPatientData
+    .new = newPatient,
+    .free = freePatient,
+    .clearPatientData = clearPatientData
 };

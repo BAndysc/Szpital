@@ -36,18 +36,34 @@ typedef struct PatientList {
 
 
 
+/*
+ * PatientLists namespace
+ */
+struct patientLists {
+    PatientList* (*new)();
+    void (*free)(PatientList* list);
 
-PatientList* newPatientList();
-void freePatientList(PatientList* list);
-void removePatient(PatientList* list, int index);
-Patient* getPatientByName(PatientList* list, char const* name);
-void pushPatient(PatientList* list, Patient* patient);
+    void (*push)(PatientList* list, Patient* patient);
+    void (*remove)(PatientList* list, int index);
+    Patient* (*getByName)(PatientList*, const char* name);
+};
 
-DiseaseList* newDiseaseList();
-void freeDiseaseList(DiseaseList* diseaseList);
-void pushDisease(DiseaseList* diseaseList, Disease* disease);
-void removeDisease(DiseaseList*, int index);
-Disease* getDisease(DiseaseList*, int index);
+const struct patientLists PatientLists;
+
+/*
+ * DiseaseLists namespace
+ */
+struct diseaseLists {
+    DiseaseList* (*new)();
+    void (*free)(DiseaseList* list);
+
+    void (*push)(DiseaseList* list, Disease* disease);
+    void (*remove)(DiseaseList* list, int index);
+    Disease* (*get)(DiseaseList*, int index);
+    Disease* (*getLast)(DiseaseList*);
+};
+
+const struct diseaseLists DiseaseLists;
 
 
 #endif //SZPITAL_STRUCTURE_H

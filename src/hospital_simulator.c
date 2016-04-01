@@ -19,11 +19,11 @@ typedef struct HospitalOnEventListener {
 } HospitalOnEventListener;
 
 static Patient* getPatientByNameOrCreate(Hospital* hospital, char* name) {
-    Patient* patient = getPatientByName(hospital->patients, name);
+    Patient* patient = PatientLists.getByName(hospital->patients, name);
     if (!patient)
     {
         patient = Patients.new(name);
-        pushPatient(hospital->patients, patient);
+        PatientLists.push(hospital->patients, patient);
     }
     return patient;
 }
@@ -32,36 +32,36 @@ static ParseResult OnEnterDescription(OnEventListener* this, DataEnterDescriptio
     Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
     Patient* patient = getPatientByNameOrCreate(hospital, data->name);
 
-    pushDisease(patient->diseases, Diseases.new(data->diseaseDescription));
+    DiseaseLists.push(patient->diseases, Diseases.new(data->diseaseDescription));
     return PARSE_RESULT_OK;
 }
 
 static ParseResult OnCopyDescription(OnEventListener* this, DataCopyDescription* data) {
     Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
-    Patient* patient = getPatientByName(hospital->patients, data->sourceName);
+    Patient* patient = PatientLists.getByName(hospital->patients, data->sourceName);
 
     if (!patient)
         return PARSE_RESULT_IGNORED;
 
-    Disease* lastDisease = getDisease(patient->diseases, patient->diseases->size-1);
+    Disease* lastDisease = DiseaseLists.getLast(patient->diseases);
 
     if (!lastDisease)
         return PARSE_RESULT_IGNORED;
 
     Patient* patient2 = getPatientByNameOrCreate(hospital, data->destinationName);
 
-    pushDisease(patient2->diseases, Diseases.copyDisease(lastDisease));
+    DiseaseLists.push(patient2->diseases, Diseases.copyDisease(lastDisease));
     return PARSE_RESULT_OK;
 }
 
 static ParseResult OnChangeDescription(OnEventListener* this, DataChangeDescription* data) {
     Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
-    Patient* patient = getPatientByName(hospital->patients, data->name);
+    Patient* patient = PatientLists.getByName(hospital->patients, data->name);
 
     if (!patient)
         return PARSE_RESULT_IGNORED;
 
-    Disease* disease = getDisease(patient->diseases, data->indexOfDisease-1);
+    Disease* disease = DiseaseLists.get(patient->diseases, data->indexOfDisease-1);
 
     if (!disease)
         return PARSE_RESULT_IGNORED;
@@ -72,12 +72,12 @@ static ParseResult OnChangeDescription(OnEventListener* this, DataChangeDescript
 
 static ParseResult OnPrintDescription(OnEventListener* this, DataPrintDescription* data) {
     Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
-    Patient* patient = getPatientByName(hospital->patients, data->name);
+    Patient* patient = PatientLists.getByName(hospital->patients, data->name);
 
     if (!patient)
         return PARSE_RESULT_IGNORED;
 
-    Disease* disease = getDisease(patient->diseases, data->indexOfDisease-1);
+    Disease* disease = DiseaseLists.get(patient->diseases, data->indexOfDisease-1);
 
     if (!disease)
         return PARSE_RESULT_IGNORED;
@@ -88,7 +88,7 @@ static ParseResult OnPrintDescription(OnEventListener* this, DataPrintDescriptio
 
 static ParseResult OnDeletePatientData(OnEventListener* this, DataDeletePatientData* data) {
     Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
-    Patient* patient = getPatientByName(hospital->patients, data->name);
+    Patient* patient = PatientLists.getByName(hospital->patients, data->name);
 
     if (!patient)
         return PARSE_RESULT_IGNORED;
@@ -118,13 +118,13 @@ static void hookParserToHospital(Hospital* hospital, Parser* parser) {
 
 static Hospital* newHospital() {
     Hospital* hospital = malloc(sizeof(Hospital));
-    hospital->patients = newPatientList();
+    hospital->patients = PatientLists.new();
     hospital->listeners = newHospitalOnEventListener(hospital);
     return hospital;
 }
 
 static void freeHospital(Hospital* hospital) {
-    freePatientList(hospital->patients);
+    PatientLists.free(hospital->patients);
     free(hospital->listeners);
     free(hospital);
 }

@@ -8,7 +8,7 @@
  * Disease list
  */
 
-DiseaseList* newDiseaseList() {
+static DiseaseList* newDiseaseList() {
     DiseaseList* list = calloc(1, sizeof(DiseaseList));
     list->first = calloc(1, sizeof(DiseaseNode));
     list->last = list->first;
@@ -43,15 +43,7 @@ static DiseaseNode* getDiseaseNode(DiseaseList* list, int index) {
         return getDiseaseNodeForward(list, index);
 }
 
-
-void freeDiseaseList(DiseaseList* list) {
-    while (list->size > 0)
-        removeDisease(list, 0);
-    free(list->first);
-    free(list);
-}
-
-void removeDisease(DiseaseList* list, int index) {
+static void removeDisease(DiseaseList* list, int index) {
     if (index < list->size)
     {
         DiseaseNode* nodeToRemove = getDiseaseNode(list, index);
@@ -66,7 +58,14 @@ void removeDisease(DiseaseList* list, int index) {
     }
 }
 
-void pushDisease(DiseaseList* list, Disease* disease) {
+static void freeDiseaseList(DiseaseList* list) {
+    while (list->size > 0)
+        removeDisease(list, 0);
+    free(list->first);
+    free(list);
+}
+
+static void pushDisease(DiseaseList* list, Disease* disease) {
     DiseaseNode* node = malloc(sizeof(DiseaseNode));
 
     node->value = disease;
@@ -78,7 +77,7 @@ void pushDisease(DiseaseList* list, Disease* disease) {
     list->size++;
 }
 
-Disease* getDisease(DiseaseList* list, int index) {
+static Disease* getDisease(DiseaseList* list, int index) {
     if (index < 0 || index >= list->size)
         return NULL;
 
@@ -86,12 +85,26 @@ Disease* getDisease(DiseaseList* list, int index) {
 }
 
 
+static Disease* getLastDisease(DiseaseList* list) {
+    return list->last->value;
+}
+
+const struct diseaseLists DiseaseLists = {
+    .new = newDiseaseList,
+    .free = freeDiseaseList,
+    .push = pushDisease,
+    .remove = removeDisease,
+    .get = getDisease,
+    .getLast = getLastDisease,
+};
+
 
 /*
  * PATIENT LIST
  */
+static void removePatient(PatientList* list, int index);
 
-PatientList* newPatientList() {
+static PatientList* newPatientList() {
     PatientList* list = malloc(sizeof(PatientList));
 
     list->first = calloc(1, sizeof(PatientNode));
@@ -101,7 +114,8 @@ PatientList* newPatientList() {
     return list;
 }
 
-void freePatientList(PatientList* list) {
+
+static void freePatientList(PatientList* list) {
     while (list->size > 0)
         removePatient(list, 0);
 
@@ -139,7 +153,7 @@ static PatientNode* getPatientNodeByName(PatientList* list, const char* name) {
 
 
 
-void removePatient(PatientList* list, int index) {
+static void removePatient(PatientList* list, int index) {
     if (index < list->size)
     {
         PatientNode* nodeToRemove = getPatientNode(list, index);
@@ -156,14 +170,14 @@ void removePatient(PatientList* list, int index) {
 }
 
 
-Patient* getPatient(PatientList* list, int index) {
+static Patient* getPatient(PatientList* list, int index) {
     if (index >= list->size)
         return NULL;
 
     return getPatientNode(list, index)->value;
 }
 
-Patient* getPatientByName(PatientList* list, char const* name) {
+static Patient* getPatientByName(PatientList* list, char const* name) {
     PatientNode* patientNode = getPatientNodeByName(list, name);
 
     if (!patientNode)
@@ -173,7 +187,7 @@ Patient* getPatientByName(PatientList* list, char const* name) {
 }
 
 
-void pushPatient(PatientList* list, Patient* patient) {
+static void pushPatient(PatientList* list, Patient* patient) {
     PatientNode* node = malloc(sizeof(PatientNode));
 
     node->value = patient;
@@ -186,7 +200,7 @@ void pushPatient(PatientList* list, Patient* patient) {
 }
 
 
-int getPatientIdByName(PatientList* list, char const* name) {
+int getPatientIdByName(PatientList* list, const char* name) {
     PatientNode* node = list->first->next;
     int id = 0;
     while (node)
@@ -200,3 +214,13 @@ int getPatientIdByName(PatientList* list, char const* name) {
 
     return -1;
 }
+
+
+
+const struct patientLists PatientLists = {
+        .new = newPatientList,
+        .free = freePatientList,
+        .push = pushPatient,
+        .remove = removePatient,
+        .getByName = getPatientByName
+};
