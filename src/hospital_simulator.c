@@ -12,6 +12,8 @@
  * The pointer to following struct can be safely casted to/from (OnEventListener*), because
  * struct OnEventListener is first field and C standard (C99: 6.7.2.1.5) guarantees
  * equivalence of memory layout
+ *
+ * More info in README.md
  */
 typedef struct HospitalOnEventListener {
     OnEventListener base;

@@ -15,6 +15,8 @@ typedef struct Disease {
  *
  * This also creates abstraction layer between interface and implementation
  * The same pattern is used in other header files
+ *
+ * More info in README.md
  */
 
 struct diseases {
