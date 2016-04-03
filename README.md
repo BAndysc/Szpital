@@ -17,7 +17,7 @@ W języku C nie ma jako takich przestrzeni nazw, ale możne je zasymulować za p
   
       const struct referencedStrings ReferencedStrings;
 
-W pliku implementacji danego modułu należy tę zmienną zainicializować konkretnymi funkcjami, które najlepiej zdefiniować jako "static", dzięki czemu mamy pewność, że tylko w tym jednym pliku będzie do nich dostęp:
+W pliku implementacji danego modułu należy tę zmienną zainicjalizować konkretnymi funkcjami, które najlepiej zdefiniować jako "static", dzięki czemu mamy pewność, że tylko w tym jednym pliku będzie do nich dostęp:
 
     static ReferencedString* newReferencedString(char const* string);
 
