@@ -169,7 +169,7 @@ static ParseResult parse(Parser* parser) {
     ParseResult result = PARSE_RESULT_EOF;
     char input[MAX_COMMAND_LENGTH];
 
-    if (scanf("%s ", input) != EOF) {
+    if (scanf("%s", input) != EOF) {
         result = parseCommand(parser, input);
         callCallback(parser, result);
     }

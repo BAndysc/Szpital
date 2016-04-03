@@ -72,6 +72,13 @@ int readInt() {
     return integer;
 }
 
-bool stringsEqual(char* string1, char* string2) {
+bool stringsEqual(const char* string1, const char* string2) {
     return strcmp(string1, string2)==0;
+}
+
+char* stringDuplicate(const char* string)
+{
+    char* newString = malloc(strlen(string)+1);
+    strcpy(newString, string);
+    return newString;
 }

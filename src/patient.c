@@ -1,12 +1,12 @@
 #include <stdlib.h>
-#include <string.h>
+#include "helpers.h"
 #include "patient.h"
 #include "structure.h"
 
 static Patient* newPatient(const char* name) {
     Patient* patient = malloc(sizeof(Patient));
 
-    patient->name = strdup(name);
+    patient->name = stringDuplicate(name);
     patient->diseases = DiseaseLists.new();
 
     return patient;

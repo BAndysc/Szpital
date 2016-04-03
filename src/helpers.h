@@ -15,6 +15,8 @@ char* readSingleWord();
 char* readLine();
 int readInt();
 
-bool stringsEqual(char* string1, char* string2);
+bool stringsEqual(const char* string1, const char* string2);
+
+char* stringDuplicate(const char* string);
 
 #endif //HOSPITAL_HELPERS_H

@@ -1,17 +1,17 @@
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
+#include "helpers.h"
 #include "reference_string.h"
 
-static int ALLOCED_REFERENCED_STRINGS = 0;
+static int ALLOCATED_REFERENCED_STRINGS = 0;
 
 static ReferencedString* newReferencedString(char const* string) {
     ReferencedString* referencedString = malloc(sizeof(ReferencedString));
 
     referencedString->references = 1;
-    referencedString->string = strdup(string);
+    referencedString->string = stringDuplicate(string);
 
-    ALLOCED_REFERENCED_STRINGS++;
+    ALLOCATED_REFERENCED_STRINGS++;
 
     return referencedString;
 }
@@ -19,7 +19,7 @@ static ReferencedString* newReferencedString(char const* string) {
 static void freeReferencedString(ReferencedString* referencedString) {
     free(referencedString->string);
     free(referencedString);
-    ALLOCED_REFERENCED_STRINGS--;
+    ALLOCATED_REFERENCED_STRINGS--;
 }
 
 static void incrementReferenceString(ReferencedString* referencedString) {
@@ -34,7 +34,7 @@ static void dereferenceReferencedString(ReferencedString* referencedString) {
 }
 
 static int getAllocatedReferenceStringsCount() {
-    return ALLOCED_REFERENCED_STRINGS;
+    return ALLOCATED_REFERENCED_STRINGS;
 }
 
 const struct referencedStrings ReferencedStrings = {
