@@ -1,5 +1,5 @@
 DIRECTORY=tests
-EXECUTABLE=bin/Szpital
+EXECUTABLE=./Hospital
 
 PASSED=0
 ALL=0
@@ -8,6 +8,7 @@ TOTAL_TIME=0
 for file in $DIRECTORY/test*.in; do
     START=$(date +%s.%N)
     $EXECUTABLE -v < $file > out 2> err
+    #valgrind --leak-check=full ./Hospital < $file 1>/dev/null
     END=$(date +%s.%N)
     time=$(echo "$END - $START" | bc)
     TOTAL_TIME=$(echo "$TOTAL_TIME + $time" | bc)

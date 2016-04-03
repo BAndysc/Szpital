@@ -1,5 +1,5 @@
-#ifndef SZPITAL_STRUCTURE_H
-#define SZPITAL_STRUCTURE_H
+#ifndef HOSPITAL_STRUCTURE_H
+#define HOSPITAL_STRUCTURE_H
 
 struct Disease;
 struct Patient;
@@ -66,4 +66,4 @@ struct diseaseLists {
 const struct diseaseLists DiseaseLists;
 
 
-#endif //SZPITAL_STRUCTURE_H
+#endif //HOSPITAL_STRUCTURE_H

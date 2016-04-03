@@ -1,5 +1,5 @@
-#ifndef SZPITAL_PATIENT_H
-#define SZPITAL_PATIENT_H
+#ifndef HOSPITAL_PATIENT_H
+#define HOSPITAL_PATIENT_H
 
 struct DiseaseList;
 
@@ -21,4 +21,4 @@ struct patients {
 
 const struct patients Patients;
 
-#endif //SZPITAL_PATIENT_H
+#endif //HOSPITAL_PATIENT_H

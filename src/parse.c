@@ -6,9 +6,10 @@
 static Parser* newParser(int argumentsCount, char** arguments) {
     Parser* parser = calloc(1, sizeof(Parser));
 
-    if (argumentsCount == 2)
-        if (stringsEqual(arguments[1], ARGUMENT_SWITCH_DEBUG))
-            parser->debugMode = true;
+    if (argumentsCount == 2 && stringsEqual(arguments[1], ARGUMENT_SWITCH_DEBUG))
+        parser->debugMode = true;
+    else if (argumentsCount > 1)
+        forceExitDueToArguments();
 
     return parser;
 }
@@ -21,109 +22,115 @@ static void setEventListener(Parser* parser, OnEventListener* listener) {
     parser->listener = listener;
 }
 
-static ParseResult executeCommandEnterDescription(Parser* parser, char* name, char* description) {
-    autofree DataEnterDescription* data = malloc(sizeof(DataEnterDescription));
+static void setOnParseResultCallback(Parser* parser, OnParseResultCallback callback)
+{
+    parser->parseResultCallback = callback;
+}
 
-    data->diseaseDescription = description;
-    data->name = name;
+static ParseResult executeCommandEnterDescription(Parser* parser, char* name, char* description) {
+    DataEnterDescription data;
+
+    data.diseaseDescription = description;
+    data.name = name;
 
     if (parser->listener)
-        return parser->listener->OnEnterDescription(parser->listener, data);
+        return parser->listener->OnEnterDescription(parser->listener, &data);
     return PARSE_RESULT_IGNORED;
 }
 
 static ParseResult parseCommandEnterDescription(Parser* parser) {
-    autofree char* name = NULL;
-    autofree char* disease = NULL;
-    name = readSingleWord();
-    disease = readLine();
+    char* name = readSingleWord();
+    char* disease = readLine();
 
-    return executeCommandEnterDescription(parser, name, disease);
+    ParseResult result = executeCommandEnterDescription(parser, name, disease);
+
+    free(name);
+    free(disease);
+    return result;
 }
 
 
 static ParseResult executeCommandCopyDescription(Parser* parser, char* sourceName, char* destinationName) {
-    autofree DataCopyDescription* data = malloc(sizeof(DataCopyDescription));
+    DataCopyDescription data;
 
-    data->sourceName = sourceName;
-    data->destinationName = destinationName;
+    data.sourceName = sourceName;
+    data.destinationName = destinationName;
 
     if (parser->listener)
-        return parser->listener->OnCopyDescription(parser->listener, data);
+        return parser->listener->OnCopyDescription(parser->listener, &data);
     return PARSE_RESULT_IGNORED;
 }
 
 static ParseResult parseCommandCopyDescription(Parser* parser) {
-    autofree char* sourceName = NULL;
-    autofree char* destinationName = NULL;
-    destinationName = readSingleWord();
-    sourceName = readSingleWord();
+    char* destinationName = readSingleWord();
+    char* sourceName = readSingleWord();
 
-    return executeCommandCopyDescription(parser, sourceName, destinationName);
+    ParseResult result = executeCommandCopyDescription(parser, sourceName, destinationName);
+
+    free(sourceName);
+    free(destinationName);
+    return result;
 }
 
 
 static ParseResult executeCommandChangeDescription(Parser* parser, char* name, int index, char* diseaseDescription) {
-    autofree DataChangeDescription* data = malloc(sizeof(DataChangeDescription));
+    DataChangeDescription data;
 
-    data->name = name;
-    data->indexOfDisease = index;
-    data->diseaseDescription = diseaseDescription;
+    data.name = name;
+    data.indexOfDisease = index;
+    data.diseaseDescription = diseaseDescription;
 
     if (parser->listener)
-        return parser->listener->OnChangeDescription(parser->listener, data);
+        return parser->listener->OnChangeDescription(parser->listener, &data);
     return PARSE_RESULT_IGNORED;
 }
 
 static ParseResult parseCommandChangeDescription(Parser* parser) {
-    autofree char* name = NULL;
-    autofree char* diseaseDescription = NULL;
-    int index;
-    name = readSingleWord();
-    index = readInt();
-    diseaseDescription = readLine();
+    char* name = readSingleWord();
+    int index = readInt();
+    char* diseaseDescription = readLine();
 
-    return executeCommandChangeDescription(parser, name, index, diseaseDescription);
+    ParseResult result = executeCommandChangeDescription(parser, name, index, diseaseDescription);
+
+    free(name);
+    free(diseaseDescription);
+    return result;
 }
 
 
 static ParseResult executeCommandPrintDescription(Parser* parser, char* name, int index) {
-    autofree DataPrintDescription* data = malloc(sizeof(DataPrintDescription));
+    DataPrintDescription data;
 
-    data->name = name;
-    data->indexOfDisease = index;
+    data.name = name;
+    data.indexOfDisease = index;
 
     if (parser->listener)
-        return parser->listener->OnPrintDescription(parser->listener, data);
+        return parser->listener->OnPrintDescription(parser->listener, &data);
     return PARSE_RESULT_IGNORED;
 }
 
 static ParseResult parseCommandPrintDescription(Parser* parser) {
-    autofree char* name = NULL;
-    int index;
-    name = readSingleWord();
-    index = readInt();
+    char* name = readSingleWord();
+    int index = readInt();
 
-    return executeCommandPrintDescription(parser, name, index);
+    ParseResult result = executeCommandPrintDescription(parser, name, index);
+
+    free(name);
+    return result;
 }
 
 
 static ParseResult executeCommandDeletePatientData(Parser* parser, char* name) {
-    DataDeletePatientData* data = malloc(sizeof(DataDeletePatientData));
-
-    data->name = name;
-
-    ParseResult result = PARSE_RESULT_IGNORED;
+    DataDeletePatientData data;
+    data.name = name;
 
     if (parser->listener)
-        result = parser->listener->OnDeletePatientData(parser->listener, data);
-    free(data);
-    return result;
+        return parser->listener->OnDeletePatientData(parser->listener, &data);
+    return PARSE_RESULT_IGNORED;
 }
 
 static ParseResult parseCommandDeletePatientData(Parser* parser) {
-    char* name = NULL;
-    name = readSingleWord();
+    char* name = readSingleWord();
 
     ParseResult result = executeCommandDeletePatientData(parser, name);
     free(name);
@@ -153,14 +160,29 @@ static bool isDebugMode(Parser* parser) {
     return parser->debugMode;
 }
 
-static ParseResult parse(Parser* parser) {
-    char input[MAX_COMMAND_LENGTH];
-    if (scanf("%s ", input) != EOF)
-        return parseCommand(parser, input);
-
-    return PARSE_RESULT_EOF;
+static void callCallback(Parser* parser, ParseResult result) {
+    if (parser->parseResultCallback)
+        parser->parseResultCallback(parser, result);
 }
 
+static ParseResult parse(Parser* parser) {
+    ParseResult result = PARSE_RESULT_EOF;
+    char input[MAX_COMMAND_LENGTH];
+
+    if (scanf("%s ", input) != EOF) {
+        result = parseCommand(parser, input);
+        callCallback(parser, result);
+    }
+
+    return result;
+}
+
+static void runParser(Parser* parser) {
+    ParseResult result;
+    do {
+        result = Parsers.parse(parser);
+    } while (result != PARSE_RESULT_EOF);
+}
 
 const struct parsers Parsers = {
     .new = newParser,
@@ -168,6 +190,8 @@ const struct parsers Parsers = {
     .parse = parse,
 
     .setEventListener = setEventListener,
+    .setOnParseResultCallback = setOnParseResultCallback,
 
-    .isDebugMode = isDebugMode
+    .isDebugMode = isDebugMode,
+    .runParser = runParser
 };

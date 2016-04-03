@@ -6,7 +6,7 @@
 #include "disease.h"
 #include "reference_string.h"
 #include "hospital_simulator.h"
-
+#include "helpers.h"
 
 /*
  * The pointer to following struct can be safely casted to/from (OnEventListener*), because
@@ -20,8 +20,7 @@ typedef struct HospitalOnEventListener {
 
 static Patient* getPatientByNameOrCreate(Hospital* hospital, char* name) {
     Patient* patient = PatientLists.getByName(hospital->patients, name);
-    if (!patient)
-    {
+    if (!patient) {
         patient = Patients.new(name);
         PatientLists.push(hospital->patients, patient);
     }
@@ -29,7 +28,7 @@ static Patient* getPatientByNameOrCreate(Hospital* hospital, char* name) {
 }
 
 static ParseResult OnEnterDescription(OnEventListener* this, DataEnterDescription* data) {
-    Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
+    Hospital* hospital = CAST_POINTER(this, HospitalOnEventListener)->hospital;
     Patient* patient = getPatientByNameOrCreate(hospital, data->name);
 
     DiseaseLists.push(patient->diseases, Diseases.new(data->diseaseDescription));
@@ -37,7 +36,7 @@ static ParseResult OnEnterDescription(OnEventListener* this, DataEnterDescriptio
 }
 
 static ParseResult OnCopyDescription(OnEventListener* this, DataCopyDescription* data) {
-    Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
+    Hospital* hospital = CAST_POINTER(this, HospitalOnEventListener)->hospital;
     Patient* patient = PatientLists.getByName(hospital->patients, data->sourceName);
 
     if (!patient)
@@ -55,7 +54,7 @@ static ParseResult OnCopyDescription(OnEventListener* this, DataCopyDescription*
 }
 
 static ParseResult OnChangeDescription(OnEventListener* this, DataChangeDescription* data) {
-    Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
+    Hospital* hospital = CAST_POINTER(this, HospitalOnEventListener)->hospital;
     Patient* patient = PatientLists.getByName(hospital->patients, data->name);
 
     if (!patient)
@@ -71,7 +70,7 @@ static ParseResult OnChangeDescription(OnEventListener* this, DataChangeDescript
 }
 
 static ParseResult OnPrintDescription(OnEventListener* this, DataPrintDescription* data) {
-    Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
+    Hospital* hospital = CAST_POINTER(this, HospitalOnEventListener)->hospital;
     Patient* patient = PatientLists.getByName(hospital->patients, data->name);
 
     if (!patient)
@@ -87,7 +86,7 @@ static ParseResult OnPrintDescription(OnEventListener* this, DataPrintDescriptio
 }
 
 static ParseResult OnDeletePatientData(OnEventListener* this, DataDeletePatientData* data) {
-    Hospital* hospital = ((HospitalOnEventListener*)this)->hospital;
+    Hospital* hospital = CAST_POINTER(this, HospitalOnEventListener)->hospital;
     Patient* patient = PatientLists.getByName(hospital->patients, data->name);
 
     if (!patient)
@@ -97,7 +96,6 @@ static ParseResult OnDeletePatientData(OnEventListener* this, DataDeletePatientD
 
     return PARSE_RESULT_OK;
 }
-
 
 static HospitalOnEventListener* newHospitalOnEventListener(Hospital* hospital) {
     HospitalOnEventListener* listener = malloc(sizeof(HospitalOnEventListener));

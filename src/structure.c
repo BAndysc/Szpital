@@ -43,19 +43,23 @@ static DiseaseNode* getDiseaseNode(DiseaseList* list, int index) {
         return getDiseaseNodeForward(list, index);
 }
 
+static void changeDiseaseNodePointers(DiseaseNode* node) {
+    node->prev->next = node->next;
+    if (node->next)
+        node->next->prev = node->prev;
+}
+
 static void removeDisease(DiseaseList* list, int index) {
-    if (index < list->size)
-    {
-        DiseaseNode* nodeToRemove = getDiseaseNode(list, index);
-        nodeToRemove->prev->next = nodeToRemove->next;
-        if (nodeToRemove->next)
-            nodeToRemove->next->prev = nodeToRemove->prev;
+    DiseaseNode* nodeToRemove = getDiseaseNode(list, index);
+    if (!nodeToRemove)
+        return;
 
-        Diseases.free(nodeToRemove->value);
-        free(nodeToRemove);
+    changeDiseaseNodePointers(nodeToRemove);
 
-        list->size--;
-    }
+    Diseases.free(nodeToRemove->value);
+    free(nodeToRemove);
+
+    list->size--;
 }
 
 static void freeDiseaseList(DiseaseList* list) {
@@ -140,8 +144,7 @@ static PatientNode* getPatientNode(PatientList* list, int index) {
 static PatientNode* getPatientNodeByName(PatientList* list, const char* name) {
     PatientNode* node = list->first->next;
 
-    while (node)
-    {
+    while (node) {
         if (strcmp(node->value->name, name) == 0)
             return node;
 
@@ -151,24 +154,24 @@ static PatientNode* getPatientNodeByName(PatientList* list, const char* name) {
     return NULL;
 }
 
-
-
-static void removePatient(PatientList* list, int index) {
-    if (index < list->size)
-    {
-        PatientNode* nodeToRemove = getPatientNode(list, index);
-        nodeToRemove->prev->next = nodeToRemove->next;
-        if (nodeToRemove->next)
-            nodeToRemove->next->prev = nodeToRemove->prev;
-
-        Patients.free(nodeToRemove->value);
-        free(nodeToRemove);
-
-        list->size--;
-
-    }
+static void changePatientNodePointers(PatientNode* node) {
+    node->prev->next = node->next;
+    if (node->next)
+        node->next->prev = node->prev;
 }
 
+static void removePatient(PatientList* list, int index) {
+    PatientNode* nodeToRemove = getPatientNode(list, index);
+    if (!nodeToRemove)
+        return;
+
+    changePatientNodePointers(nodeToRemove);
+
+    Patients.free(nodeToRemove->value);
+    free(nodeToRemove);
+
+    list->size--;
+}
 
 static Patient* getPatient(PatientList* list, int index) {
     if (index >= list->size)
@@ -186,7 +189,6 @@ static Patient* getPatientByName(PatientList* list, char const* name) {
     return patientNode->value;
 }
 
-
 static void pushPatient(PatientList* list, Patient* patient) {
     PatientNode* node = malloc(sizeof(PatientNode));
 
@@ -198,23 +200,6 @@ static void pushPatient(PatientList* list, Patient* patient) {
     list->last = node;
     list->size++;
 }
-
-
-int getPatientIdByName(PatientList* list, const char* name) {
-    PatientNode* node = list->first->next;
-    int id = 0;
-    while (node)
-    {
-        if (strcmp(node->value->name, name) == 0)
-            return id;
-
-        node = node->next;
-        id++;
-    }
-
-    return -1;
-}
-
 
 
 const struct patientLists PatientLists = {

@@ -1,5 +1,5 @@
-#ifndef SZPITAL_HOSPITAL_SIMULATOR_H
-#define SZPITAL_HOSPITAL_SIMULATOR_H
+#ifndef HOSPITAL_HOSPITAL_SIMULATOR_H
+#define HOSPITAL_HOSPITAL_SIMULATOR_H
 
 struct PatientList;
 struct Parser;
@@ -25,4 +25,4 @@ struct hospitals {
 const struct hospitals Hospitals;
 
 
-#endif //SZPITAL_HOSPITAL_SIMULATOR_H
+#endif //HOSPITAL_HOSPITAL_SIMULATOR_H

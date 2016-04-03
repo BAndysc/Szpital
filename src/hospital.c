@@ -3,30 +3,28 @@
 #include "reference_string.h"
 #include "hospital_simulator.h"
 
-static void parseResult(Parser *parser, ParseResult parseResult) {
-    if (parseResult == PARSE_RESULT_OK)
-        printf("OK\n");
+#define MESSAGE_OK "OK\n"
+#define MESSAGE_IGNORED "IGNORED\n"
+#define MESSAGE_DEBUG_DESCRIPTIONS "DESCRIPTIONS: %d\n"
 
+static void parseResult(Parser* parser, ParseResult parseResult) {
+    if (parseResult == PARSE_RESULT_OK)
+        printf(MESSAGE_OK);
     else if (parseResult == PARSE_RESULT_IGNORED)
-        printf("IGNORED\n");
+        printf(MESSAGE_IGNORED);
 
     if (Parsers.isDebugMode(parser))
-        fprintf(stderr, "DESCRIPTIONS: %d\n", ReferencedStrings.getAllocatedStringsCount());
-}
-
-static void runParser(Parser* parser) {
-    ParseResult result;
-    while ((result = Parsers.parse(parser)) != PARSE_RESULT_EOF)
-        parseResult(parser, result);
+        fprintf(stderr, MESSAGE_DEBUG_DESCRIPTIONS, ReferencedStrings.getAllocatedStringsCount());
 }
 
 int main(int argc, char** argv) {
-    Hospital* hospital = Hospitals.new();
     Parser* parser = Parsers.new(argc, argv);
+    Hospital* hospital = Hospitals.new();
 
     Hospitals.hookParser(hospital, parser);
+    Parsers.setOnParseResultCallback(parser, parseResult);
 
-    runParser(parser);
+    Parsers.runParser(parser);
 
     Parsers.free(parser);
     Hospitals.free(hospital);

@@ -1,5 +1,5 @@
-#ifndef SZPITAL_DISEASE_H
-#define SZPITAL_DISEASE_H
+#ifndef HOSPITAL_DISEASE_H
+#define HOSPITAL_DISEASE_H
 
 struct ReferencedString;
 
@@ -28,4 +28,4 @@ struct diseases {
 
 const struct diseases Diseases;
 
-#endif //SZPITAL_DISEASE_H
+#endif //HOSPITAL_DISEASE_H

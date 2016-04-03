@@ -1,5 +1,5 @@
-#ifndef SZPITAL_REFERENCE_STRING_H
-#define SZPITAL_REFERENCE_STRING_H
+#ifndef HOSPITAL_REFERENCE_STRING_H
+#define HOSPITAL_REFERENCE_STRING_H
 
 
 typedef struct ReferencedString {
@@ -23,4 +23,4 @@ struct referencedStrings {
 
 const struct referencedStrings ReferencedStrings;
 
-#endif //SZPITAL_REFERENCE_STRING_H
+#endif //HOSPITAL_REFERENCE_STRING_H

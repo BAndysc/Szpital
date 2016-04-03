@@ -1,5 +1,5 @@
-#ifndef SZPITAL_PARSE_H
-#define SZPITAL_PARSE_H
+#ifndef HOSPITAL_PARSE_H
+#define HOSPITAL_PARSE_H
 
 #include <stdbool.h>
 
@@ -8,6 +8,7 @@
 #define CHANGE_DESCRIPTION "CHANGE_DESCRIPTION"
 #define PRINT_DESCRIPTION "PRINT_DESCRIPTION"
 #define DELETE_PATIENT_DATA "DELETE_PATIENT_DATA"
+
 #define MAX_COMMAND_LENGTH 30
 
 #define ARGUMENT_SWITCH_DEBUG "-v"
@@ -44,7 +45,9 @@ typedef struct {
     char* name;
 } DataDeletePatientData;
 
-
+/*
+ * Observer pattern "interface"
+ */
 typedef struct OnEventListener {
     ParseResult (*OnEnterDescription)(struct OnEventListener* this, DataEnterDescription* data);
     ParseResult (*OnCopyDescription)(struct OnEventListener* this, DataCopyDescription* data);
@@ -53,8 +56,13 @@ typedef struct OnEventListener {
     ParseResult (*OnDeletePatientData)(struct OnEventListener* this, DataDeletePatientData* data);
 } OnEventListener;
 
+
+struct Parser;
+typedef void (*OnParseResultCallback)(struct Parser* parser, ParseResult result);
+
 typedef struct Parser {
     OnEventListener* listener;
+    OnParseResultCallback parseResultCallback;
     bool debugMode;
 } Parser;
 
@@ -69,11 +77,14 @@ struct parsers {
     ParseResult (*parse)(Parser* parser);
 
     void (*setEventListener)(Parser* parser, OnEventListener* listener);
+    void (*setOnParseResultCallback)(Parser* parser, OnParseResultCallback callback);
 
     bool (*isDebugMode)(Parser* parser);
+
+    void (*runParser)(Parser* parser);
 };
 
 const struct parsers Parsers;
 
 
-#endif //SZPITAL_PARSE_H
+#endif //HOSPITAL_PARSE_H
