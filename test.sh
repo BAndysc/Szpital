@@ -44,12 +44,14 @@ fi
 
 for file in $DIRECTORY/test*.in; do
     FILENAME=${file/$DIRECTORY/""}
+
     START=$(date +%s.%N)
     $EXECUTABLE $PARAMETERS < $file > out 2> err
-    #valgrind --leak-check=full ./Hospital < $file 1>/dev/null
     END=$(date +%s.%N)
+
     time=$(echo "$END - $START" | bc)
     TOTAL_TIME=$(echo "$TOTAL_TIME + $time" | bc)
+
     if diff out "${file%.in}.out" >/dev/null 2>&1; then
     	echo "Test ${FILENAME} $OK (took $time seconds)"
         if [ $DEBUG_CHECK == 1 ]; then
@@ -59,13 +61,18 @@ for file in $DIRECTORY/test*.in; do
             else
                 echo " ...but refrenced string $WRONG"
             fi
+
             echo ""
+        else
+            PASSED=$(($PASSED+1))
         fi
     else
     	echo "Test ${FILENAME} $WRONG"
     fi
     ALL=$(($ALL+1))
 done
+rm -f out
+rm -f err
 
 echo "Your application has passed $PASSED out of $ALL tests!"
 echo "It has taken $TOTAL_TIME seconds"
